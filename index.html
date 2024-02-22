@@ -38,8 +38,76 @@
 			Calculate the chance of hitting a block for all cryptocurrencies when solo mining.<br>
 			<small class="text-body-secondary">Are you ready to critical-hit a block? 🎲🟨🟩</small>
 		</h5>
-		<hr>
-		// TODO: CURRENTLY IN DEVELOPMENT...
+		<ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+				   aria-selected="true">Enter Hashrate Manually</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+				   aria-controls="profile" aria-selected="false">Choose Device</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+				   aria-controls="contact" aria-selected="false">Paste Mining Address</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="currency" role="tabpanel" aria-labelledby="home-tab">
+				<h5 class="text-center m-1 mt-3">
+					Enter Hashrate Manually
+				</h5>
+				<div class="card-deck">
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Select currency</h5>
+
+							<select class="form-select m-3" style="overflow: hidden;" size="8" multiple aria-label="multiple select example">
+								<option class="m-1" value="BTC">Bitcoin (BTC)</option>
+								<option class="m-1" value="BCH">Bitcoin Cash (BCH)</option>
+								<option class="m-1" value="LTC">Litecoin (LTC)</option>
+								<option class="m-1" value="DOGE">Dogecoin (DOGE)</option>
+								<option class="m-1" value="DOGE">Ravencoin (RVN)</option>
+								<option class="m-1" value="DOGE">Monero (XMR)</option>
+							</select>
+
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Enter hashrate</h5>
+
+							<select class="form-select m-3" style="overflow: hidden;" size="5" multiple aria-label="multiple select example">
+								<option class="m-1" value="GH">GigaHash per second (GH/s)</option>
+								<option class="m-1" value="TH">TeraHash per second (TH/s)</option>
+								<option class="m-1" value="PH">PetaHash per second (PH/s)</option>
+							</select>
+
+							<input class="form-control" type="text" placeholder="Enter hashrate" aria-label="default input example">
+
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<h5 class="card-title">Result</h5>
+							<p class="card-text">// TODO: Result will be here.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+				<h5 class="text-center m-1 mt-3">
+					Choose Device<br>//
+					TODO: CURRENTLY IN DEVELOPMENT...
+				</h5>
+			</div>
+			<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+				<h5 class="text-center m-1 mt-3">
+					Paste Mining
+					Address<br>// TODO: CURRENTLY IN DEVELOPMENT...
+				</h5>
+			</div>
+		</div>
 		<hr>
 		<div class="d-flex justify-content-center">
 			DISCLAIMER: We make no representation or warranty of any kind, express or implied, regarding the accuracy,
@@ -94,12 +162,14 @@
 						<li class="list-group-item"><span class="text-primary">💰 additional ₿0.05 donation</span><br>Historical
 							Chance Graphs
 						</li>
-						<li class="list-group-item"><span class="text-primary">💰 every ₿0.01 donation</span><br>Your crypto related text & link will be listed on hall of fame for 10 years (minimum). It can be your crypto related FB page, ref link or e-commerce website.
+						<li class="list-group-item"><span class="text-primary">💰 every ₿0.01 donation</span><br>Your
+							crypto related text & link will be listed on hall of fame for 10 years (minimum). It can be
+							your crypto related FB page, ref link or e-commerce website.
 						</li>
 						<li class="list-group-item"><span class="text-primary">🛍️ sponsorship from Solo/Lotto miner producers/distributors/online shops</span><br>Your
 							product will be added on pre-selected list with its link.
 						</li>
-						<li class="list-group-item">
+						<li class="list-group-item">Reach us via email mail@ionia.ee for donations
 						</li>
 					</ul>
 				</div>
