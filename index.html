@@ -84,14 +84,56 @@
 									   placeholder="Enter hashrate">
 							</div>
 							<div class="form-group col-md-3 d-flex align-items-end">
-								<button type="button" class="btn btn-primary" onclick="calculateHashrate()">Calculate</button>
+								<button type="button" class="btn btn-primary" onclick="calculateHashrate()">Calculate
+								</button>
 							</div>
 						</div>
 
 					</form>
 
-					<div id="result" class="mt-3 text-monospace">
-						Result will be here.
+					<div class="d-flex justify-content-center">
+						<div id="result" class="mt-3 text-monospace">
+							<table class="table table-responsive" style="min-width: 600px !important;">
+								<tbody>
+								<tr>
+									<th scope="row">Your hashrate</th>
+									<td id="your-hashrate"></td>
+								</tr>
+								<tr>
+									<th scope="row">Network hashrate</th>
+									<td id="network-hashrate"></td>
+								</tr>
+								<tr>
+									<th scope="row">Block interval</th>
+									<td id="block-interval"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per block</th>
+									<td id="chance-per-block"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per hour</th>
+									<td id="chance-per-hour"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per day</th>
+									<td id="chance-per-day"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per week</th>
+									<td id="chance-per-week"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per month</th>
+									<td id="chance-per-month"></td>
+								</tr>
+								<tr>
+									<th scope="row">Chance per year</th>
+									<td id="chance-per-year"></td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
