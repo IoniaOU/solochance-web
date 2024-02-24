@@ -39,3 +39,13 @@ async function calculateHashrate() {
         console.error('Error fetching data:', error);
     }
 }
+
+document.getElementById('inputHashrate').addEventListener('keypress', function (event) {
+    // Check if the pressed key is Enter (key code 13)
+    if (event.keyCode === 13) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+        // Call the calculateHashrate function
+        calculateHashrate();
+    }
+});
