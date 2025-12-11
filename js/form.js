@@ -8,8 +8,10 @@ async function calculateHashrate() {
     const calcBtn = document.getElementById('calculate-btn');
 
     try {
-        calcBtn.disabled = true;
-        calcBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Calculating...';
+        if (calcBtn) {
+            calcBtn.disabled = true;
+            calcBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Calculating...';
+        }
 
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -75,9 +77,11 @@ async function calculateHashrate() {
     } catch (error) {
         console.error('Error fetching data:', error);
     } finally {
-        // ✅ restore button
-        calcBtn.disabled = false;
-        calcBtn.innerHTML = 'Calculate';
+        // Restore button text/state
+        if (calcBtn) {
+            calcBtn.disabled = false;
+            calcBtn.innerHTML = 'Calculate';
+        }
     }
 }
 
