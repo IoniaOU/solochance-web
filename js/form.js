@@ -35,6 +35,21 @@ async function calculateHashrate() {
 
         const yearChance = document.getElementById('chance-per-year');
         yearChance.innerHTML = data['yearChanceText'];
+
+        // ---- halving visibility logic ----
+        const halvingRow = document.getElementById('halving-row');
+        const halvingChance = document.getElementById('chance-by-halving');
+
+        const untilHalvingText = (data['untilNextHalvingChanceText'] ?? '').toString().trim();
+
+        if (untilHalvingText !== '') {
+            halvingChance.innerHTML = untilHalvingText;
+            halvingRow.style.display = '';
+        } else {
+            halvingChance.innerHTML = '';
+            halvingRow.style.display = 'none';
+        }
+
     } catch (error) {
         console.error('Error fetching data:', error);
     }
