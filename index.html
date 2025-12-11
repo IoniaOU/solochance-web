@@ -4,13 +4,13 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K3R0470G9T"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-K3R0470G9T');
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-K3R0470G9T');
     </script>
-    
+
     <meta charset="utf-8">
     <meta name="keywords"
           content="Solo Chance, solochance.com, solochance.net, solochance.org, Solo Mining, Solo Mine, Mine Block, Mining Block, Bitcoin, Bitcoin Cash, Bitcoin SV, eCash, Litecoin, Dogecoin, Ravencoin, Monero, Ethereum Classic, Bitcoin Silver, Siacoin">
@@ -35,7 +35,7 @@
     <link rel="icon" type="image/png" href="images/logo-no-text-transparent.png"/>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6507588368884912"
-         crossorigin="anonymous"></script>
+            crossorigin="anonymous"></script>
 
     <title>SoloChance.org</title>
 </head>
@@ -102,14 +102,14 @@
                                placeholder="Enter hashrate">
                     </div>
                     <div class="form-group col-md-3 d-flex align-items-end">
-                        <button
-                                type="button"
-                                class="btn btn-primary"
-                                id="calculate-btn"
-                                onclick="calculateHashrate()">
+                        <button type="button" class="btn btn-primary" id="calculate-btn" onclick="calculateHashrate()">
                             Calculate
                         </button>
                     </div>
+                </div>
+
+                <div id="loading-indicator" class="justify-content-center my-2 d-none">
+                    <span><i class="fas fa-spinner fa-spin"></i> Calculating your chances...</span>
                 </div>
 
             </form>
