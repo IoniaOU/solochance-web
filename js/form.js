@@ -5,13 +5,12 @@ async function calculateHashrate() {
 
     const apiUrl = `https://api.solochance.org/getSoloChanceCalculations?currency=${currency}&hashrate=${hashrate}&hashrateUnit=${hashrateUnit}`;
 
-    const loading = document.getElementById('loading-indicator');
     const calcBtn = document.getElementById('calculate-btn');
 
     try {
-        loading.classList.remove('d-none');
-        loading.classList.add('d-flex');
+        // 🔄 turn button into a loading button
         calcBtn.disabled = true;
+        calcBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Calculating...';
 
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -77,9 +76,9 @@ async function calculateHashrate() {
     } catch (error) {
         console.error('Error fetching data:', error);
     } finally {
-        loading.classList.add('d-none');
-        loading.classList.remove('d-flex');
+        // ✅ restore button
         calcBtn.disabled = false;
+        calcBtn.innerHTML = 'Calculate';
     }
 }
 
