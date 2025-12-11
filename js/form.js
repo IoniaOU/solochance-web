@@ -52,6 +52,7 @@ async function calculateHashrate() {
 
         // ---- last mining reward block visibility logic ----
         const lastBlockRow = document.getElementById('last-mining-reward-block-row');
+        const lastBlockRow2 = document.getElementById('last-mining-reward-block-row2');
         const lastBlockChance = document.getElementById('chance-by-last-block');
 
         const untilLastBlockText = (data['untilLastMiningRewardBlockChanceText'] ?? '').toString().trim();
@@ -59,9 +60,11 @@ async function calculateHashrate() {
         if (untilLastBlockText !== '') {
             lastBlockChance.innerHTML = untilLastBlockText;
             lastBlockRow.style.display = '';
+            lastBlockRow2.style.display = '';
         } else {
             lastBlockChance.innerHTML = '';
             lastBlockRow.style.display = 'none';
+            lastBlockRow2.style.display = 'none !important';
         }
 
     } catch (error) {
