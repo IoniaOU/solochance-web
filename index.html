@@ -37,6 +37,8 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6507588368884912"
             crossorigin="anonymous"></script>
 
+    <script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
+
     <title>SoloChance.org</title>
 </head>
 
@@ -70,7 +72,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="selectCurrency">Select Currency</label>
-                        <select class="form-control" id="selectCurrency" name="selectCurrency">
+                        <select class="form-control" id="selectCurrency" name="selectCurrency" onchange="changeCurrency()">
                             <option value="BTC">Bitcoin (BTC)</option>
                             <option value="BCH">Bitcoin Cash (BCH)</option>
                             <option value="BSV">Bitcoin SV (BSV)</option>
@@ -110,7 +112,32 @@
 
             </form>
 
+            <div    id = "bch-donate"
+                    class="paybutton-widget"
+                    to="bitcoincash:qqj3umezjmxallrmh760ugeg7mzda8h59ckcl83v3g"
+                    amount=3
+                    currency="USD"
+                    text="Buy a coffee for the developer"
+                    hover-text="Buy a coffee for the developer"
+                    success-text="Thank you so much"
+                    goal-amount=300
+                    style="display: none !important;"
+            ></div>
+
+            <div    id = "xec-donate"
+                    class="paybutton-widget"
+                    to="ecash:qq3r6qn888v76t2snxz8hr277n68nld4rvp8cq4pzh"
+                    amount=3
+                    currency="USD"
+                    text="Buy a coffee for the developer"
+                    hover-text="Buy a coffee for the developer"
+                    success-text="Thank you so much"
+                    goal-amount=300
+                    style="display: none !important;"
+            ></div>
+
             <div class="d-flex justify-content-center">
+
                 <div id="result" class="mt-3">
                     <table class="table table-responsive">
                         <tbody>

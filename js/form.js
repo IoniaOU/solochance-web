@@ -1,3 +1,26 @@
+async function changeCurrency() {
+    const currency = document.getElementById('selectCurrency').value;
+
+    const xecDonate = document.getElementById('xec-donate');
+
+    if (currency == 'XEC') {
+        xecDonate.style.display = '';
+    }
+    else {
+        xecDonate.style.display = 'none';
+    }
+
+    const bchDonate = document.getElementById('bch-donate');
+
+    if (currency == 'BCH') {
+        bchDonate.style.display = '';
+    }
+    else {
+        bchDonate.style.display = 'none';
+    }
+
+}
+
 async function calculateHashrate() {
     const currency = document.getElementById('selectCurrency').value;
     const hashrateUnit = document.getElementById('selectHashrateUnit').value;
