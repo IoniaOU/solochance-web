@@ -1,6 +1,8 @@
 async function changeCurrency() {
     const currency = document.getElementById('selectCurrency').value;
 
+    const coffeeDonate = document.getElementById('coffee-donate');
+
     const xecDonate = document.getElementById('xec-donate');
 
     if (currency == 'XEC') {
@@ -19,6 +21,15 @@ async function changeCurrency() {
         bchDonate.style.display = 'none';
     }
 
+    if ((currency == 'XEC') || (currency == 'BCH'))
+    {
+        coffeeDonate.style.display = '';
+    }
+    else
+    {
+        coffeeDonate.style.display = 'none';
+        coffeeDonate.style.setProperty('display', 'none', 'important');
+    }
 }
 
 async function calculateHashrate() {
