@@ -231,6 +231,78 @@
 
         <hr>
 
+        <div class="container mt-5">
+            <h3 class="text-center">Add Live SoloChance.Org Calculations To Your Product Page</h3>
+            <p>Customise how the calculator appears on your website.</p>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Currency</label>
+                    <select id="w-curr" class="form-control mb-2">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="BCH">Bitcoin Cash (BCH)</option>
+                        <option value="BSV">Bitcoin SV (BSV)</option>
+                        <option value="XEC">eCash (XEC)</option>
+                        <option value="DGB">DigiByte (DGB) - SHA256</option>
+                        <option value="AUR">Auroracoin (AUR) - SHA256</option>
+                        <option value="PPC">Peercoin (PPC)</option>
+                        <option value="LCC">Litecoin Cash (LCC) - SHA256</option>
+                        <option value="LTC">Litecoin (LTC)</option>
+                        <option value="DOGE">Dogecoin (DOGE)</option>
+                        <option value="XMR">Monero (XMR)</option>
+                        <option value="RVN">Ravencoin (RVN)</option>
+                        <option value="ETC">Ethereum Classic (ETC)</option>
+                        <option value="BTCS">Bitcoin Silver (BTCS)</option>
+                        <option value="BC2">BitcoinII (BC2)</option>
+                        <option value="SC">Siacoin (SC)</option>
+                        <option value="ZEC">Zcash (ZEC)</option>
+                        <option value="tBTC">Bitcoin Testnet (tBTC)</option>
+                    </select>
+
+                    <label>Product Hashrate</label>
+                    <input type="number" id="w-hash" class="form-control mb-2" value="140">
+
+                    <label>Unit</label>
+                    <select id="w-unit" class="form-control mb-2">
+                        <option value="KH">Kilohash per second (KH/s)</option>
+                        <option value="MH">Megahash per second (MH/s)</option>
+                        <option value="GH">Gigahash per second (GH/s)</option>
+                        <option value="TH" selected>Terahash per second (TH/s)</option>
+                        <option value="PH">Petahash per second (PH/s)</option>
+                        <option value="EH">Exahash per second (EH/s)</option>
+                    </select>
+
+                    <button class="btn btn-success btn-block" onclick="generateWidget()">Generate Code</button>
+                </div>
+
+                <div class="col-md-8">
+                    <label>Copy this code to your website:</label>
+                    <textarea id="w-output" class="form-control" rows="4" readonly></textarea>
+
+                    <div class="mt-4">
+                        <label>Preview:</label>
+                        <div id="w-preview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function generateWidget() {
+                const curr = document.getElementById('w-curr').value;
+                const hash = document.getElementById('w-hash').value;
+                const unit = document.getElementById('w-unit').value;
+
+                const url = `https://solochance.org/widget.html?currency=${curr}&hashrate=${hash}&unit=${unit}`;
+                const iframeCode = `<iframe src="${url}" width="350" height="280" frameborder="0"></iframe>`;
+
+                document.getElementById('w-output').value = iframeCode;
+                document.getElementById('w-preview').innerHTML = iframeCode;
+            }
+        </script>
+
+        <hr>
+
         <div class="d-flex justify-content-center m-2">
             <h5>API</h5>
         </div>
