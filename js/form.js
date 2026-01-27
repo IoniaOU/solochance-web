@@ -60,13 +60,19 @@ async function calculateHashrate() {
         blockIntervalContainer.innerHTML = data['blockIntervalInMinutes'] + ' minutes';
 
         const price = document.getElementById('price');
-        price.innerHTML = data['price'] + ' USD';
+        price.innerHTML = Number(data.price).toLocaleString('en-US',
+            {
+                maximumFractionDigits: 2
+            }) + ' USD';
 
         const blockReward = document.getElementById('block-reward');
         blockReward.innerHTML = data['blockReward'] + ' ' + currency;
 
         const blockRewardUsd = document.getElementById('block-reward-usd');
-        blockRewardUsd.innerHTML = data['blockRewardInUSD'] + ' USD';
+        blockRewardUsd.innerHTML = Number(data.blockRewardInUSD).toLocaleString('en-US',
+            {
+                maximumFractionDigits: 2
+            }) + ' USD';
 
         const blockChance = document.getElementById('chance-per-block');
         blockChance.innerHTML = data['blockChanceText'];

@@ -44,7 +44,7 @@
             document.getElementById('currency').innerText = currency;
             document.getElementById('reward').innerText = Number(data.blockRewardInUSD).toLocaleString('en-US',
                 {
-                    maximumFractionDigits: 0
+                    maximumFractionDigits: 2
                 }) + ' USD';
             document.getElementById('day').innerText = data.dayChanceText;
             document.getElementById('week').innerText = data.weekChanceText;
