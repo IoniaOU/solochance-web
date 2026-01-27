@@ -17,6 +17,7 @@
     </div>
     <table class="table table-sm mb-0">
         <tbody id="results-body">
+        <tr><td>Block Reward</td><td class="text-right chance-val" id="reward">...</td></tr>
         <tr><td>Per Day</td><td class="text-right chance-val" id="day">...</td></tr>
         <tr><td>Per Week</td><td class="text-right chance-val" id="week">...</td></tr>
         <tr><td>Per Month</td><td class="text-right chance-val" id="month">...</td></tr>
@@ -39,6 +40,10 @@
     fetch(`https://api.solochance.org/getSoloChanceCalculations?currency=${currency}&hashrate=${hashrate}&hashrateUnit=${unit}`)
         .then(res => res.json())
         .then(data => {
+            document.getElementById('reward').innerText = Number(data.blockRewardInUSD).toLocaleString('en-US',
+                {
+                    maximumFractionDigits: 0
+                }) + ' USD';
             document.getElementById('day').innerText = data.dayChanceText;
             document.getElementById('week').innerText = data.weekChanceText;
             document.getElementById('month').innerText = data.monthChanceText;
