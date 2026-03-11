@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SoloChance // SCI-FI EDITION</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --neon-red: #ff003c;
+            --panel-bg: rgba(0, 10, 2, 0.85);
+            --border-color: #00ff4155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Starfield ── */
+        #starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── Scanlines overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ── Layout ── */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* ── Logo / Header ── */
+        .logo-area {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+
+        .logo-area h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--neon-cyan);
+            text-shadow:
+                0 0 10px var(--neon-cyan),
+                0 0 30px var(--neon-cyan),
+                0 0 60px var(--neon-cyan);
+            letter-spacing: 6px;
+            animation: flicker 4s infinite;
+        }
+
+        .logo-area .sub {
+            color: var(--neon-green);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        .logo-area .tagline {
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-top: 14px;
+            letter-spacing: 1px;
+        }
+
+        @keyframes flicker {
+            0%, 95%, 97%, 100% { opacity: 1; }
+            96% { opacity: 0.4; }
+        }
+
+        /* ── Divider ── */
+        .hud-divider {
+            border: none;
+            border-top: 1px solid var(--neon-green);
+            box-shadow: 0 0 8px var(--neon-green);
+            margin: 20px 0;
+            opacity: 0.5;
+        }
+
+        /* ── Panel ── */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            box-shadow:
+                0 0 20px rgba(0,255,65,0.05),
+                inset 0 0 20px rgba(0,255,65,0.03);
+        }
+
+        .panel::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -10px;
+            left: 18px;
+            background: #000;
+            padding: 0 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        /* Corner accents */
+        .panel::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 12px; height: 12px;
+            border-top: 2px solid var(--neon-cyan);
+            border-right: 2px solid var(--neon-cyan);
+        }
+
+        /* ── Form ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .form-grid .btn-cell { grid-column: span 2; }
+            .logo-area h1 { font-size: 1.8rem; }
+        }
+
+        label {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--neon-cyan);
+            margin-bottom: 6px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            padding: 8px 10px;
+            border-radius: 2px;
+            outline: none;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        select option { background: #000; }
+
+        select:focus, input[type="number"]:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button { display: none; }
+
+        /* ── Button ── */
+        .btn-engage {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-engage::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            background: rgba(0, 245, 255, 0.15);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s;
+            border-radius: 50%;
+        }
+
+        .btn-engage:hover::before { width: 300px; height: 300px; }
+
+        .btn-engage:hover {
+            box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .btn-engage:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ── Results table ── */
+        #result-panel { display: none; }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table tr {
+            border-bottom: 1px solid rgba(0,255,65,0.1);
+        }
+
+        .result-table tr:last-child { border-bottom: none; }
+
+        .result-table th {
+            color: #555;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            font-weight: 400;
+            padding: 10px 8px;
+            text-align: left;
+            width: 45%;
+        }
+
+        .result-table td {
+            color: var(--neon-green);
+            font-size: 0.9rem;
+            padding: 10px 8px;
+            text-align: right;
+            text-shadow: 0 0 6px var(--neon-green);
+        }
+
+        .result-table tr.highlight td {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+            font-weight: bold;
+        }
+
+        .result-table tr.dim td { color: #444; text-shadow: none; }
+
+        /* Scan-in animation */
+        @keyframes scanIn {
+            from { opacity: 0; transform: translateX(-8px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .result-table tr {
+            opacity: 0;
+            animation: scanIn 0.3s forwards;
+        }
+
+        /* stagger each row */
+        .result-table tr:nth-child(1)  { animation-delay: 0.05s; }
+        .result-table tr:nth-child(2)  { animation-delay: 0.10s; }
+        .result-table tr:nth-child(3)  { animation-delay: 0.15s; }
+        .result-table tr:nth-child(4)  { animation-delay: 0.20s; }
+        .result-table tr:nth-child(5)  { animation-delay: 0.25s; }
+        .result-table tr:nth-child(6)  { animation-delay: 0.30s; }
+        .result-table tr:nth-child(7)  { animation-delay: 0.35s; }
+        .result-table tr:nth-child(8)  { animation-delay: 0.40s; }
+        .result-table tr:nth-child(9)  { animation-delay: 0.45s; }
+        .result-table tr:nth-child(10) { animation-delay: 0.50s; }
+        .result-table tr:nth-child(11) { animation-delay: 0.55s; }
+        .result-table tr:nth-child(12) { animation-delay: 0.60s; }
+        .result-table tr:nth-child(13) { animation-delay: 0.65s; }
+        .result-table tr:nth-child(14) { animation-delay: 0.70s; }
+
+        /* ── Status bar ── */
+        .status-bar {
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: #333;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .status-bar.active { color: var(--neon-green); }
+
+        /* ── Spinner ── */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            display: inline-block;
+            width: 12px; height: 12px;
+            border: 2px solid #0f0;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        /* ── Footer ── */
+        .sci-footer {
+            text-align: center;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: #222;
+            margin-top: 40px;
+        }
+
+        .sci-footer a { color: #333; text-decoration: none; }
+        .sci-footer a:hover { color: var(--neon-green); }
+
+        /* Pulsing border on result panel */
+        @keyframes borderPulse {
+            0%, 100% { border-color: rgba(0,255,65,0.2); }
+            50% { border-color: rgba(0,255,65,0.6); }
+        }
+
+        #result-panel { animation: borderPulse 3s ease-in-out infinite; }
+
+        /* ── API note ── */
+        .api-code {
+            background: rgba(0,255,65,0.05);
+            border: 1px solid rgba(0,255,65,0.2);
+            border-radius: 2px;
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            color: #0a0;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        /* ── Twitter ── */
+        .twitter-bar {
+            text-align: center;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin: 10px 0 20px;
+        }
+        .twitter-bar a { color: var(--neon-cyan); text-decoration: none; }
+        .twitter-bar a:hover { text-shadow: 0 0 8px var(--neon-cyan); }
+
+        /* ── Error ── */
+        .error-msg {
+            color: var(--neon-red);
+            text-shadow: 0 0 8px var(--neon-red);
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="page">
+
+    <div class="logo-area">
+        <h1>SOLO<span style="color:var(--neon-green);">CHANCE</span><span style="color:var(--neon-cyan);font-size:0.5em;letter-spacing:4px;">.ORG</span></h1>
+        <div class="sub">// SCI-FI EDITION //</div>
+        <div class="tagline">Calculate the probability of hitting a block when solo mining across the galaxy.</div>
+    </div>
+
+    <div class="twitter-bar">
+        SIGNAL BOOST &rarr; <a href="https://twitter.com/solochanceorg" target="_blank">@solochanceorg</a>
+    </div>
+
+    <hr class="hud-divider">
+
+    <div class="panel" data-label="TARGETING SYSTEM">
+        <div class="form-grid">
+            <div>
+                <label for="selectCurrency">Target Currency</label>
+                <select id="selectCurrency">
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="BCH">Bitcoin Cash (BCH)</option>
+                    <option value="BSV">Bitcoin SV (BSV)</option>
+                    <option value="XEC">eCash (XEC)</option>
+                    <option value="DGB">DigiByte (DGB) - SHA256</option>
+                    <option value="AUR">Auroracoin (AUR) - SHA256</option>
+                    <option value="PPC">Peercoin (PPC)</option>
+                    <option value="LCC">Litecoin Cash (LCC) - SHA256</option>
+                    <option value="LTC">Litecoin (LTC)</option>
+                    <option value="DOGE">Dogecoin (DOGE)</option>
+                    <option value="XMR">Monero (XMR)</option>
+                    <option value="RVN">Ravencoin (RVN)</option>
+                    <option value="ETC">Ethereum Classic (ETC)</option>
+                    <option value="BTCS">Bitcoin Silver (BTCS)</option>
+                    <option value="BC2">BitcoinII (BC2)</option>
+                    <option value="SC">Siacoin (SC)</option>
+                    <option value="ZEC">Zcash (ZEC)</option>
+                    <option value="tBTC">Bitcoin Testnet (tBTC)</option>
+                </select>
+            </div>
+            <div>
+                <label for="selectHashrateUnit">Weapon Class</label>
+                <select id="selectHashrateUnit">
+                    <option value="KH">KH/s — Kilohash</option>
+                    <option value="MH">MH/s — Megahash</option>
+                    <option value="GH">GH/s — Gigahash</option>
+                    <option value="TH" selected>TH/s — Terahash</option>
+                    <option value="PH">PH/s — Petahash</option>
+                    <option value="EH">EH/s — Exahash</option>
+                </select>
+            </div>
+            <div>
+                <label for="inputHashrate">Firepower</label>
+                <input type="number" id="inputHashrate" placeholder="e.g. 100">
+            </div>
+            <div class="btn-cell">
+                <button class="btn-engage" id="calculate-btn" onclick="calculateHashrate()">ENGAGE</button>
+            </div>
+        </div>
+        <div class="error-msg" id="error-msg">// SIGNAL LOST — CHECK INPUTS AND RETRY //</div>
+    </div>
+
+    <div class="panel" data-label="PROBABILITY MATRIX" id="result-panel">
+        <table class="result-table" id="result-table">
+            <tbody>
+                <tr><th>YOUR HASHRATE</th><td id="your-hashrate">—</td></tr>
+                <tr><th>NETWORK HASHRATE</th><td id="network-hashrate">—</td></tr>
+                <tr><th>BLOCK INTERVAL</th><td id="block-interval">—</td></tr>
+                <tr><th>PRICE</th><td id="price">—</td></tr>
+                <tr class="highlight"><th>BLOCK REWARD</th><td id="block-reward">—</td></tr>
+                <tr class="highlight"><th>BLOCK REWARD (USD)</th><td id="block-reward-usd">—</td></tr>
+                <tr><th>CHANCE / BLOCK</th><td id="chance-per-block">—</td></tr>
+                <tr><th>CHANCE / HOUR</th><td id="chance-per-hour">—</td></tr>
+                <tr class="highlight"><th>CHANCE / DAY</th><td id="chance-per-day">—</td></tr>
+                <tr><th>CHANCE / WEEK</th><td id="chance-per-week">—</td></tr>
+                <tr><th>CHANCE / MONTH</th><td id="chance-per-month">—</td></tr>
+                <tr><th>CHANCE / YEAR</th><td id="chance-per-year">—</td></tr>
+                <tr id="halving-row" style="display:none;"><th>CHANCE BY 2028 HALVING</th><td id="chance-by-halving">—</td></tr>
+                <tr id="last-block-row" style="display:none;"><th>CHANCE BY 2140</th><td id="chance-by-last-block">—</td></tr>
+            </tbody>
+        </table>
+        <div class="status-bar active" id="status-bar">// DATA STREAM ACTIVE //</div>
+    </div>
+
+    <hr class="hud-divider">
+
+    <div class="panel" data-label="COMMS LINK">
+        <div class="api-code">curl 'https://api.solochance.org/getSoloChanceCalculations?currency=BTC&amp;hashrate=42&amp;hashrateUnit=TH'</div>
+    </div>
+
+    <div class="sci-footer">
+        <p>DISCLAIMER: NO REPRESENTATION OR WARRANTY OF ANY KIND IS MADE REGARDING ACCURACY OR COMPLETENESS.</p>
+        <p style="margin-top:8px;">&copy; IONIA OÜ, ESTONIA, 2024 &mdash; <a href="../index.html">BACK TO NORMAL REALITY</a> &mdash; <a href="https://solochance.org">SOLOCHANCE.ORG</a></p>
+    </div>
+
+</div>
+
+<!-- ══ Starfield ══════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+    }
+
+    function initStars(n) {
+        stars = [];
+        for (let i = 0; i < n; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: Math.random() * 1.2 + 0.2,
+                speed: Math.random() * 0.3 + 0.05,
+                opacity: Math.random()
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        stars.forEach(s => {
+            s.y += s.speed;
+            if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+            s.opacity += (Math.random() - 0.5) * 0.02;
+            s.opacity = Math.max(0.1, Math.min(1, s.opacity));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 255, 200, ${s.opacity * 0.6})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+
+    resize();
+    initStars(250);
+    draw();
+    window.addEventListener('resize', () => { resize(); initStars(250); });
+})();
+</script>
+
+<!-- ══ Calculator logic ═══════════════════════════════════════════════════════ -->
+<script>
+async function calculateHashrate() {
+    const currency    = document.getElementById('selectCurrency').value;
+    const hashrateUnit = document.getElementById('selectHashrateUnit').value;
+    const hashrate    = document.getElementById('inputHashrate').value;
+    const errMsg      = document.getElementById('error-msg');
+    const calcBtn     = document.getElementById('calculate-btn');
+    const resultPanel = document.getElementById('result-panel');
+
+    errMsg.style.display = 'none';
+
+    if (!hashrate || hashrate <= 0) {
+        errMsg.style.display = 'block';
+        return;
+    }
+
+    const apiUrl = `https://api.solochance.org/getSoloChanceCalculations?currency=${currency}&hashrate=${hashrate}&hashrateUnit=${hashrateUnit}`;
+
+    try {
+        calcBtn.disabled = true;
+        calcBtn.innerHTML = '<span class="spinner"></span> COMPUTING...';
+
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // Force re-trigger scan-in animation
+        const tbody = document.querySelector('#result-table tbody');
+        const rows = tbody.querySelectorAll('tr');
+        rows.forEach(r => { r.style.animation = 'none'; r.offsetHeight; r.style.animation = ''; });
+
+        document.getElementById('your-hashrate').innerHTML    = data.currentHashrateText;
+        document.getElementById('network-hashrate').innerHTML = data.networkHashrateText;
+        document.getElementById('block-interval').innerHTML   = data.blockIntervalInMinutes + ' minutes';
+        document.getElementById('price').innerHTML = Number(data.price).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USD';
+        document.getElementById('block-reward').innerHTML = data.blockReward + ' ' + currency;
+        document.getElementById('block-reward-usd').innerHTML = Number(data.blockRewardInUSD).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USD';
+        document.getElementById('chance-per-block').innerHTML  = data.blockChanceText;
+        document.getElementById('chance-per-hour').innerHTML   = data.hourChanceText;
+        document.getElementById('chance-per-day').innerHTML    = data.dayChanceText;
+        document.getElementById('chance-per-week').innerHTML   = data.weekChanceText;
+        document.getElementById('chance-per-month').innerHTML  = data.monthChanceText;
+        document.getElementById('chance-per-year').innerHTML   = data.yearChanceText;
+
+        const halvingText = (data.untilNextHalvingChanceText ?? '').toString().trim();
+        const halvingRow  = document.getElementById('halving-row');
+        if (halvingText) {
+            document.getElementById('chance-by-halving').innerHTML = halvingText;
+            halvingRow.style.display = '';
+        } else {
+            halvingRow.style.display = 'none';
+        }
+
+        const lastBlockText = (data.untilLastMiningRewardBlockChanceText ?? '').toString().trim();
+        const lastBlockRow  = document.getElementById('last-block-row');
+        if (lastBlockText) {
+            document.getElementById('chance-by-last-block').innerHTML = lastBlockText;
+            lastBlockRow.style.display = '';
+        } else {
+            lastBlockRow.style.display = 'none';
+        }
+
+        resultPanel.style.display = 'block';
+
+    } catch (err) {
+        console.error(err);
+        errMsg.style.display = 'block';
+    } finally {
+        calcBtn.disabled = false;
+        calcBtn.innerHTML = 'ENGAGE';
+    }
+}
+
+document.getElementById('inputHashrate').addEventListener('keypress', function (e) {
+    if (e.keyCode === 13) { e.preventDefault(); calculateHashrate(); }
+});
+</script>
+
+</body>
+</html>
