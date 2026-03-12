@@ -3,7 +3,46 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SoloChance // SCI-FI EDITION</title>
+    <meta name="description"
+          content="SoloChance.org Sci-Fi Edition — The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash, plus Bitcoin, Monero, Dogecoin and 15+ more. Same calculator, a cooler interface.">
+    <meta name="author" content="Ionia OÜ">
+    <meta name="google" content="notranslate">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://solochance.org/scifi/">
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://solochance.org/scifi/">
+    <meta property="og:title"       content="SoloChance.org // Sci-Fi Edition">
+    <meta property="og:description" content="The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more. Same calculator, a cooler interface.">
+    <meta property="og:image"       content="https://solochance.org/images/logo-domain.png">
+    <meta property="og:site_name"   content="SoloChance.org">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@solochanceorg">
+    <meta name="twitter:title"       content="SoloChance.org // Sci-Fi Edition">
+    <meta name="twitter:description" content="The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more. Same calculator, a cooler interface.">
+    <meta name="twitter:image"       content="https://solochance.org/images/logo-domain.png">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SoloChance.org — Sci-Fi Edition",
+      "url": "https://solochance.org/scifi/",
+      "description": "Solo mining chance calculator for Bitcoin, Bitcoin Cash, Bitcoin SV, eCash, Monero, Dogecoin and 15+ cryptocurrencies.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Organization", "name": "Ionia OÜ" }
+    }
+    </script>
+
+    <link rel="icon" type="image/png" href="../images/logo-no-text-transparent.png">
+    <title>SoloChance.org // Sci-Fi Edition — Solo Mining Chance Calculator</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
@@ -272,6 +311,12 @@
             font-weight: bold;
         }
 
+        .result-table tr.orange td {
+            color: #ff8c00;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.7);
+            font-weight: bold;
+        }
+
         .result-table tr.dim td { color: #444; text-shadow: none; }
 
         /* Scan-in animation */
@@ -300,6 +345,15 @@
         .result-table tr:nth-child(12) { animation-delay: 0.60s; }
         .result-table tr:nth-child(13) { animation-delay: 0.65s; }
         .result-table tr:nth-child(14) { animation-delay: 0.70s; }
+
+        /* ── Stale results ── */
+        .result-table {
+            transition: opacity 0.25s;
+        }
+
+        .result-table.stale {
+            opacity: 0.25;
+        }
 
         /* ── Status bar ── */
         .status-bar {
@@ -362,10 +416,54 @@
             text-align: center;
             font-size: 0.75rem;
             letter-spacing: 2px;
-            margin: 10px 0 20px;
+            margin: 10px 0 14px;
         }
         .twitter-bar a { color: var(--neon-cyan); text-decoration: none; }
         .twitter-bar a:hover { text-shadow: 0 0 8px var(--neon-cyan); }
+
+        /* ── Theme switcher ── */
+        .theme-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            width: 180px;
+            height: 48px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0;
+            color: #0f172a;
+            text-decoration: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.08);
+            transition: border-color .2s, box-shadow .2s, color .2s;
+        }
+
+        .theme-btn:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 20px rgba(0,0,0,.14);
+            color: #4f46e5;
+        }
+
+        .theme-text { white-space: nowrap; }
+
+        @media (max-width: 640px) {
+            .theme-btn {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                top: 12px;
+                right: 12px;
+            }
+            .theme-text { display: none; }
+        }
 
         /* ── Error ── */
         .error-msg {
@@ -381,6 +479,13 @@
 <body>
 
 <canvas id="starfield"></canvas>
+
+<a class="theme-btn" href="../">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+    </svg>
+    <span class="theme-text">Classic Theme</span>
+</a>
 
 <div class="page">
 
@@ -450,7 +555,7 @@
                 <tr><th>NETWORK HASHRATE</th><td id="network-hashrate">—</td></tr>
                 <tr><th>BLOCK INTERVAL</th><td id="block-interval">—</td></tr>
                 <tr><th>PRICE</th><td id="price">—</td></tr>
-                <tr class="highlight"><th>BLOCK REWARD</th><td id="block-reward">—</td></tr>
+                <tr class="orange"><th>BLOCK REWARD</th><td id="block-reward">—</td></tr>
                 <tr class="highlight"><th>BLOCK REWARD (USD)</th><td id="block-reward-usd">—</td></tr>
                 <tr><th>CHANCE / BLOCK</th><td id="chance-per-block">—</td></tr>
                 <tr><th>CHANCE / HOUR</th><td id="chance-per-hour">—</td></tr>
@@ -588,6 +693,7 @@ async function calculateHashrate() {
         }
 
         resultPanel.style.display = 'block';
+        document.getElementById('result-table').classList.remove('stale');
 
     } catch (err) {
         console.error(err);
@@ -601,6 +707,31 @@ async function calculateHashrate() {
 document.getElementById('inputHashrate').addEventListener('keypress', function (e) {
     if (e.keyCode === 13) { e.preventDefault(); calculateHashrate(); }
 });
+
+(function () {
+    function updateBtn() {
+        const val = document.getElementById('inputHashrate').value;
+        const btn = document.getElementById('calculate-btn');
+        btn.disabled = !val || parseFloat(val) <= 0;
+    }
+    document.getElementById('inputHashrate').addEventListener('input', updateBtn);
+    updateBtn();
+}());
+
+(function () {
+    function markStale() {
+        const panel = document.getElementById('result-panel');
+        if (!panel || panel.style.display !== 'block') return;
+        document.getElementById('result-table').classList.add('stale');
+    }
+    ['selectCurrency', 'selectHashrateUnit', 'inputHashrate'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', markStale);
+            el.addEventListener('input', markStale);
+        }
+    });
+}());
 </script>
 
 </body>
