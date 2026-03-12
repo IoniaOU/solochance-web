@@ -68,8 +68,6 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6507588368884912"
             crossorigin="anonymous"></script>
 
-    <!-- PayButton -->
-    <script src="https://unpkg.com/@paybutton/paybutton/dist/paybutton.js"></script>
 
     <title>SoloChance.org — Solo Mining Chance Calculator</title>
 
@@ -350,6 +348,42 @@
 
         /* ── Donate wrapper ──────────────────────────────────────────── */
         #coffee-donate { margin-bottom: 20px; }
+
+        .donate-address-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 10px 14px;
+            margin-top: 8px;
+        }
+
+        .donate-address-row code {
+            flex: 1;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            flex-shrink: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+        }
+
+        .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-copy.copied { border-color: var(--green); color: var(--green); }
 
         /* ── Divider ─────────────────────────────────────────────────── */
         .divider {
@@ -665,29 +699,21 @@
     <div id="coffee-donate" style="display: none;">
         <div class="panel">
             <div class="panel-label">Buy a coffee for the developer</div>
-            <div id="bch-donate"
-                 class="paybutton-widget"
-                 to="bitcoincash:qqj3umezjmxallrmh760ugeg7mzda8h59ckcl83v3g"
-                 amount="3"
-                 currency="USD"
-                 text="Buy a coffee for the developer"
-                 hover-text="Buy a coffee for the developer"
-                 success-text="Thank you so much"
-                 goal-amount="300"
-                 style="display: none;"
-                 disable-audio="true">
+
+            <div id="bch-donate" style="display: none;">
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">Bitcoin Cash (BCH)</p>
+                <div class="donate-address-row">
+                    <code>bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm</code>
+                    <button class="btn-copy" onclick="copyDonateAddress('bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm', this)">Copy</button>
+                </div>
             </div>
-            <div id="xec-donate"
-                 class="paybutton-widget"
-                 to="ecash:qq3r6qn888v76t2snxz8hr277n68nld4rvp8cq4pzh"
-                 amount="3"
-                 currency="USD"
-                 text="Buy a coffee for the developer"
-                 hover-text="Buy a coffee for the developer"
-                 success-text="Thank you so much"
-                 goal-amount="300"
-                 style="display: none;"
-                 disable-audio="true">
+
+            <div id="xec-donate" style="display: none;">
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">eCash (XEC)</p>
+                <div class="donate-address-row">
+                    <code>ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9</code>
+                    <button class="btn-copy" onclick="copyDonateAddress('ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9', this)">Copy</button>
+                </div>
             </div>
         </div>
     </div>
@@ -877,6 +903,17 @@
 </div><!-- /page -->
 
 <script>
+    function copyDonateAddress(address, btn) {
+        navigator.clipboard.writeText(address).then(function () {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(function () {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
     function toggleFooter(btn) {
         const footer = document.getElementById('site-footer');
         const open   = footer.style.display === 'block';
