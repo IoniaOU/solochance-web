@@ -338,7 +338,25 @@
         }
 
         /* ── Donate wrapper ──────────────────────────────────────────── */
-        #coffee-donate { margin-bottom: 20px; }
+        #coffee-donate {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+        #coffee-donate.donate-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes donateSwap {
+            0%   { opacity: 1; transform: translateY(0); }
+            35%  { opacity: 0; transform: translateY(6px); }
+            36%  { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        #donate-address-panel.swapping {
+            animation: donateSwap 0.55s ease forwards;
+        }
 
         .donate-address-row {
             display: flex;
@@ -893,6 +911,8 @@
     'ZEC': 't1fhoTM1KRtkKSpc457BVQwJzpxq6SAWRF6'
     };
 
+    var _lastDonateCurrency = null;
+
     function updateDonateSection() {
         const currency = document.getElementById('selectCurrency').value;
         const address  = DONATE_ADDRESSES[currency] || null;
@@ -900,17 +920,48 @@
         const panel    = document.getElementById('donate-address-panel');
 
         if (typeof calcCount === 'undefined' || calcCount < 2 || !address) {
-            wrapper.style.display = 'none';
+            _lastDonateCurrency = null;
+            wrapper.classList.remove('donate-visible');
+            clearTimeout(wrapper._hideTimer);
+            wrapper._hideTimer = setTimeout(function () {
+                if (!wrapper.classList.contains('donate-visible')) {
+                    wrapper.style.display = 'none';
+                }
+            }, 400);
             return;
         }
 
-        panel.innerHTML =
+        const newContent =
             '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">' + currency + '</p>' +
             '<div class="donate-address-row">' +
                 '<code>' + address + '</code>' +
                 '<button class="btn-copy" onclick="copyDonateAddress(\'' + address + '\', this)">Copy</button>' +
             '</div>';
-        wrapper.style.display = '';
+
+        const alreadyVisible = wrapper.classList.contains('donate-visible');
+
+        if (alreadyVisible) {
+            if (currency === _lastDonateCurrency) return; // same content, no animation
+            // content swap: animate only the inner panel
+            panel.classList.remove('swapping');
+            void panel.offsetWidth;
+            panel.innerHTML = newContent;
+            panel.classList.add('swapping');
+            _lastDonateCurrency = currency;
+            return;
+        }
+
+        panel.innerHTML = newContent;
+        _lastDonateCurrency = currency;
+
+        if (wrapper.style.display === 'none') {
+            wrapper.style.display = '';
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                wrapper.classList.add('donate-visible');
+            });
+        });
     }
 
     function changeCurrency() {
