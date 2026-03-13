@@ -686,26 +686,11 @@
         </form>
     </div>
 
-    <!-- ── Donate (shown only for BCH / XEC) ────────────────────────────── -->
+    <!-- ── Donate ───────────────────────────────────────────────────────── -->
     <div id="coffee-donate" style="display: none;">
         <div class="panel">
             <div class="panel-label">Buy a coffee for the developer</div>
-
-            <div id="bch-donate" style="display: none;">
-                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">Bitcoin Cash (BCH)</p>
-                <div class="donate-address-row">
-                    <code>bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm</code>
-                    <button class="btn-copy" onclick="copyDonateAddress('bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm', this)">Copy</button>
-                </div>
-            </div>
-
-            <div id="xec-donate" style="display: none;">
-                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">eCash (XEC)</p>
-                <div class="donate-address-row">
-                    <code>ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9</code>
-                    <button class="btn-copy" onclick="copyDonateAddress('ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9', this)">Copy</button>
-                </div>
-            </div>
+            <div id="donate-address-panel"></div>
         </div>
     </div>
 
@@ -894,6 +879,42 @@
 </div><!-- /page -->
 
 <script>
+    const DONATE_ADDRESSES = {
+    'BTC': 'bc1qzhf8vl89ev6jcly6zexdehef4zgnh3w8ahf97a',
+    'BCH': 'bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm',
+    'XEC': 'ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9',
+    'DGB': 'DNFom53EYTntDPRfv19dbvFTKxR4RSsFi9',
+    'LTC': 'ltc1qmjhg6n96la3mszdwrnppz3jg8drtr7627rxusu',
+    'DOGE': 'DH3n1YKXmVxdeMgrpbZb1FEQ8dj7tJmAUd',
+    'RVN': 'RFKhncKtrHFDMBXStyUybumvoGur65QdFV',
+    'ETC': '0x313105B4eea850a00f79d1DFc1DfA1dEc6C67171',
+    'ZEC': 't1fhoTM1KRtkKSpc457BVQwJzpxq6SAWRF6'
+    };
+
+    function updateDonateSection() {
+        const currency = document.getElementById('selectCurrency').value;
+        const address  = DONATE_ADDRESSES[currency] || null;
+        const wrapper  = document.getElementById('coffee-donate');
+        const panel    = document.getElementById('donate-address-panel');
+
+        if (typeof calcCount === 'undefined' || calcCount < 2 || !address) {
+            wrapper.style.display = 'none';
+            return;
+        }
+
+        panel.innerHTML =
+            '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">' + currency + '</p>' +
+            '<div class="donate-address-row">' +
+                '<code>' + address + '</code>' +
+                '<button class="btn-copy" onclick="copyDonateAddress(\'' + address + '\', this)">Copy</button>' +
+            '</div>';
+        wrapper.style.display = '';
+    }
+
+    function changeCurrency() {
+        updateDonateSection();
+    }
+
     function copyDonateAddress(address, btn) {
         navigator.clipboard.writeText(address).then(function () {
             btn.textContent = 'Copied!';
@@ -970,9 +991,10 @@
 }());
 </script>
 
-<script src="js/form.js?v=4"></script>
+<script src="js/form.js?v=5"></script>
 
 <script>
+    var calcCount = 0;
 (function () {
     const _orig = calculateHashrate;
     calculateHashrate = async function () {
@@ -980,9 +1002,11 @@
         const tbl = document.querySelector('.result-table');
         if (!tbl) return;
         hasCalculated = true;
+        calcCount++;
         tbl.classList.remove('animate', 'stale');
         void tbl.offsetWidth; // force reflow
         tbl.classList.add('animate');
+        updateDonateSection();
     };
 
     let hasCalculated = false;

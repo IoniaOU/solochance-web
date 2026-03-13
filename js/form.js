@@ -4,9 +4,6 @@ const el = {
     hashrateUnit:   document.getElementById('selectHashrateUnit'),
     hashrate:       document.getElementById('inputHashrate'),
     calcBtn:        document.getElementById('calculate-btn'),
-    coffeeDonate:   document.getElementById('coffee-donate'),
-    bchDonate:      document.getElementById('bch-donate'),
-    xecDonate:      document.getElementById('xec-donate'),
     yourHashrate:   document.getElementById('your-hashrate'),
     networkHashrate:document.getElementById('network-hashrate'),
     blockInterval:  document.getElementById('block-interval'),
@@ -40,17 +37,6 @@ function setConditionalRow(row, footnote, cell, text) {
             ? footnote.style.removeProperty('display')
             : footnote.style.setProperty('display', 'none', 'important');
     }
-}
-
-// ── Currency change ───────────────────────────────────────────────────────
-function changeCurrency() {
-    const currency = el.currency.value;
-    const isBCH = currency === 'BCH';
-    const isXEC = currency === 'XEC';
-
-    el.bchDonate.style.display = isBCH ? '' : 'none';
-    el.xecDonate.style.display = isXEC ? '' : 'none';
-    el.coffeeDonate.style.display = (isBCH || isXEC) ? '' : 'none';
 }
 
 // ── Calculate ─────────────────────────────────────────────────────────────
