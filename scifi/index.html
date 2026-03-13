@@ -465,6 +465,81 @@
             .theme-text { display: none; }
         }
 
+        /* ── Donate panel ── */
+        #coffee-donate {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            margin-bottom: 24px;
+        }
+        #coffee-donate.donate-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .donate-label {
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 12px;
+        }
+
+        .donate-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .donate-addr {
+            flex: 1;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 6px var(--neon-green);
+            background: rgba(0,255,65,0.05);
+            border: 1px solid rgba(0,255,65,0.2);
+            border-radius: 2px;
+            padding: 8px 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            display: block;
+        }
+
+        .btn-donate-copy {
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            padding: 8px 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: box-shadow 0.2s, text-shadow 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-donate-copy:hover {
+            box-shadow: 0 0 12px var(--neon-cyan);
+            text-shadow: 0 0 6px var(--neon-cyan);
+        }
+        .btn-donate-copy.copied {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            text-shadow: 0 0 6px var(--neon-green);
+        }
+
+        @keyframes scifiSwap {
+            0%   { opacity: 1;   transform: translateX(0); }
+            20%  { opacity: 0;   transform: translateX(6px); }
+            21%  { opacity: 0;   transform: translateX(-6px); }
+            60%  { opacity: 0.5; transform: translateX(0); }
+            100% { opacity: 1;   transform: translateX(0); }
+        }
+        #donate-address-panel.swapping {
+            animation: scifiSwap 0.45s ease forwards;
+        }
+
         /* ── Error ── */
         .error-msg {
             color: var(--neon-red);
@@ -505,7 +580,7 @@
         <div class="form-grid">
             <div>
                 <label for="selectCurrency">Target Currency</label>
-                <select id="selectCurrency">
+                <select id="selectCurrency" onchange="changeCurrency()">
                     <option value="BTC">Bitcoin (BTC)</option>
                     <option value="BCH">Bitcoin Cash (BCH)</option>
                     <option value="BSV">Bitcoin SV (BSV)</option>
@@ -546,6 +621,13 @@
             </div>
         </div>
         <div class="error-msg" id="error-msg">// SIGNAL LOST — CHECK INPUTS AND RETRY //</div>
+    </div>
+
+    <!-- ── Donate ── -->
+    <div id="coffee-donate" style="display:none;">
+        <div class="panel" data-label="SUPPORT OPS">
+            <div id="donate-address-panel"></div>
+        </div>
     </div>
 
     <div class="panel" data-label="PROBABILITY MATRIX" id="result-panel">
@@ -630,6 +712,91 @@
 })();
 </script>
 
+<!-- ══ Donate logic ════════════════════════════════════════════════════════════ -->
+<script>
+    var calcCount = 0;
+    var _lastDonateCurrency = null;
+
+    var DONATE_ADDRESSES = {
+        'BTC': 'bc1qzhf8vl89ev6jcly6zexdehef4zgnh3w8ahf97a',
+        'BCH': 'bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm',
+        'BSV': '15jEvM15BVRYbeNsv9Dkr1BgySA2AcNAsQ',
+        'XEC': 'ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9',
+        'DGB': 'DNFom53EYTntDPRfv19dbvFTKxR4RSsFi9',
+        'LTC': 'ltc1qmjhg6n96la3mszdwrnppz3jg8drtr7627rxusu',
+        'DOGE': 'DH3n1YKXmVxdeMgrpbZb1FEQ8dj7tJmAUd',
+        'XMR': '85PDyHAcS9vdCjYjKksmo9Fo5XiscEgL32xLEsKtnEo7Aw9zon1Vm8oRYQf9TGw4kuaTgR4iocUgrLB9wprxNdAFEE9e5Ht',
+        'RVN': 'RFKhncKtrHFDMBXStyUybumvoGur65QdFV',
+        'ETC': '0x313105B4eea850a00f79d1DFc1DfA1dEc6C67171',
+        'ZEC': 't1fhoTM1KRtkKSpc457BVQwJzpxq6SAWRF6'
+    };
+
+    function updateDonateSection() {
+        var currency = document.getElementById('selectCurrency').value;
+        var address  = DONATE_ADDRESSES[currency] || null;
+        var wrapper  = document.getElementById('coffee-donate');
+        var panel    = document.getElementById('donate-address-panel');
+
+        if (calcCount < 2 || !address) {
+            _lastDonateCurrency = null;
+            wrapper.classList.remove('donate-visible');
+            clearTimeout(wrapper._hideTimer);
+            wrapper._hideTimer = setTimeout(function () {
+                if (!wrapper.classList.contains('donate-visible')) {
+                    wrapper.style.display = 'none';
+                }
+            }, 650);
+            return;
+        }
+
+        var newContent =
+            '<p class="donate-label">// ' + currency + ' — SEND FUEL TO DEVELOPER //</p>' +
+            '<div class="donate-row">' +
+                '<code class="donate-addr">' + address + '</code>' +
+                '<button class="btn-donate-copy" onclick="copyDonateAddress(\'' + address + '\', this)">[ COPY ]</button>' +
+            '</div>';
+
+        var alreadyVisible = wrapper.classList.contains('donate-visible');
+
+        if (alreadyVisible) {
+            if (currency === _lastDonateCurrency) return;
+            panel.classList.remove('swapping');
+            void panel.offsetWidth;
+            panel.innerHTML = newContent;
+            panel.classList.add('swapping');
+            _lastDonateCurrency = currency;
+            return;
+        }
+
+        panel.innerHTML = newContent;
+        _lastDonateCurrency = currency;
+
+        if (wrapper.style.display === 'none') {
+            wrapper.style.display = '';
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                wrapper.classList.add('donate-visible');
+            });
+        });
+    }
+
+    function changeCurrency() {
+        updateDonateSection();
+    }
+
+    function copyDonateAddress(address, btn) {
+        navigator.clipboard.writeText(address).then(function () {
+            btn.textContent = '[ OK ]';
+            btn.classList.add('copied');
+            setTimeout(function () {
+                btn.textContent = '[ COPY ]';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+</script>
+
 <!-- ══ Calculator logic ═══════════════════════════════════════════════════════ -->
 <script>
 async function calculateHashrate() {
@@ -694,6 +861,8 @@ async function calculateHashrate() {
 
         resultPanel.style.display = 'block';
         document.getElementById('result-table').classList.remove('stale');
+        calcCount++;
+        updateDonateSection();
 
     } catch (err) {
         console.error(err);
