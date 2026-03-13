@@ -1,145 +1,112 @@
-async function changeCurrency() {
-    const currency = document.getElementById('selectCurrency').value;
+// ── Cached DOM references ─────────────────────────────────────────────────
+const el = {
+    currency:       document.getElementById('selectCurrency'),
+    hashrateUnit:   document.getElementById('selectHashrateUnit'),
+    hashrate:       document.getElementById('inputHashrate'),
+    calcBtn:        document.getElementById('calculate-btn'),
+    coffeeDonate:   document.getElementById('coffee-donate'),
+    bchDonate:      document.getElementById('bch-donate'),
+    xecDonate:      document.getElementById('xec-donate'),
+    yourHashrate:   document.getElementById('your-hashrate'),
+    networkHashrate:document.getElementById('network-hashrate'),
+    blockInterval:  document.getElementById('block-interval'),
+    price:          document.getElementById('price'),
+    blockReward:    document.getElementById('block-reward'),
+    blockRewardUsd: document.getElementById('block-reward-usd'),
+    chanceBlock:    document.getElementById('chance-per-block'),
+    chanceHour:     document.getElementById('chance-per-hour'),
+    chanceDay:      document.getElementById('chance-per-day'),
+    chanceWeek:     document.getElementById('chance-per-week'),
+    chanceMonth:    document.getElementById('chance-per-month'),
+    chanceYear:     document.getElementById('chance-per-year'),
+    halvingRow:     document.getElementById('halving-row'),
+    halvingChance:  document.getElementById('chance-by-halving'),
+    lastBlockRow:   document.getElementById('last-mining-reward-block-row'),
+    lastBlockRow2:  document.getElementById('last-mining-reward-block-row2'),
+    lastBlockChance:document.getElementById('chance-by-last-block'),
+};
 
-    const coffeeDonate = document.getElementById('coffee-donate');
+// ── Helpers ───────────────────────────────────────────────────────────────
+function formatUSD(value) {
+    return Number(value).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USD';
+}
 
-    const xecDonate = document.getElementById('xec-donate');
-
-    if (currency == 'XEC') {
-        xecDonate.style.display = '';
-    }
-    else {
-        xecDonate.style.display = 'none';
-    }
-
-    const bchDonate = document.getElementById('bch-donate');
-
-    if (currency == 'BCH') {
-        bchDonate.style.display = '';
-    }
-    else {
-        bchDonate.style.display = 'none';
-    }
-
-    if ((currency == 'XEC') || (currency == 'BCH'))
-    {
-        coffeeDonate.style.display = '';
-    }
-    else
-    {
-        coffeeDonate.style.display = 'none';
-        coffeeDonate.style.setProperty('display', 'none', 'important');
+function setConditionalRow(row, footnote, cell, text) {
+    const hasText = text.trim() !== '';
+    cell.textContent = hasText ? text : '';
+    row.style.display = hasText ? '' : 'none';
+    if (footnote) {
+        hasText
+            ? footnote.style.removeProperty('display')
+            : footnote.style.setProperty('display', 'none', 'important');
     }
 }
 
+// ── Currency change ───────────────────────────────────────────────────────
+function changeCurrency() {
+    const currency = el.currency.value;
+    const isBCH = currency === 'BCH';
+    const isXEC = currency === 'XEC';
+
+    el.bchDonate.style.display = isBCH ? '' : 'none';
+    el.xecDonate.style.display = isXEC ? '' : 'none';
+    el.coffeeDonate.style.display = (isBCH || isXEC) ? '' : 'none';
+}
+
+// ── Calculate ─────────────────────────────────────────────────────────────
 async function calculateHashrate() {
-    const currency = document.getElementById('selectCurrency').value;
-    const hashrateUnit = document.getElementById('selectHashrateUnit').value;
-    const hashrate = document.getElementById('inputHashrate').value;
+    const currency    = el.currency.value;
+    const hashrateUnit = el.hashrateUnit.value;
+    const hashrate    = el.hashrate.value;
 
     const apiUrl = `https://api.solochance.org/getSoloChanceCalculations?currency=${currency}&hashrate=${hashrate}&hashrateUnit=${hashrateUnit}`;
 
-    const calcBtn = document.getElementById('calculate-btn');
+    el.calcBtn.disabled = true;
+    el.calcBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Calculating...';
 
     try {
-        if (calcBtn) {
-            calcBtn.disabled = true;
-            calcBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Calculating...';
-        }
-
         const response = await fetch(apiUrl);
+
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
+
         const data = await response.json();
 
-        const yourHashrateContainer = document.getElementById('your-hashrate');
-        yourHashrateContainer.innerHTML = data['currentHashrateText'];
+        el.yourHashrate.textContent    = data.currentHashrateText;
+        el.networkHashrate.textContent = data.networkHashrateText;
+        el.blockInterval.textContent   = data.blockIntervalInMinutes + ' minutes';
+        el.price.textContent           = formatUSD(data.price);
+        el.blockReward.textContent     = data.blockReward + ' ' + currency;
+        el.blockRewardUsd.textContent  = formatUSD(data.blockRewardInUSD);
+        el.chanceBlock.textContent     = data.blockChanceText;
+        el.chanceHour.textContent      = data.hourChanceText;
+        el.chanceDay.textContent       = data.dayChanceText;
+        el.chanceWeek.textContent      = data.weekChanceText;
+        el.chanceMonth.textContent     = data.monthChanceText;
+        el.chanceYear.textContent      = data.yearChanceText;
 
-        const networkHashrateContainer = document.getElementById('network-hashrate');
-        networkHashrateContainer.innerHTML = data['networkHashrateText'];
+        setConditionalRow(
+            el.halvingRow, null, el.halvingChance,
+            (data.untilNextHalvingChanceText ?? '').toString()
+        );
 
-        const blockIntervalContainer = document.getElementById('block-interval');
-        blockIntervalContainer.innerHTML = data['blockIntervalInMinutes'] + ' minutes';
-
-        const price = document.getElementById('price');
-        price.innerHTML = Number(data.price).toLocaleString('en-US',
-            {
-                maximumFractionDigits: 2
-            }) + ' USD';
-
-        const blockReward = document.getElementById('block-reward');
-        blockReward.innerHTML = data['blockReward'] + ' ' + currency;
-
-        const blockRewardUsd = document.getElementById('block-reward-usd');
-        blockRewardUsd.innerHTML = Number(data.blockRewardInUSD).toLocaleString('en-US',
-            {
-                maximumFractionDigits: 2
-            }) + ' USD';
-
-        const blockChance = document.getElementById('chance-per-block');
-        blockChance.innerHTML = data['blockChanceText'];
-
-        const hourChance = document.getElementById('chance-per-hour');
-        hourChance.innerHTML = data['hourChanceText'];
-
-        const dayChance = document.getElementById('chance-per-day');
-        dayChance.innerHTML = data['dayChanceText'];
-
-        const weekChance = document.getElementById('chance-per-week');
-        weekChance.innerHTML = data['weekChanceText'];
-
-        const monthChance = document.getElementById('chance-per-month');
-        monthChance.innerHTML = data['monthChanceText'];
-
-        const yearChance = document.getElementById('chance-per-year');
-        yearChance.innerHTML = data['yearChanceText'];
-
-        // ---- halving visibility logic ----
-        const halvingRow = document.getElementById('halving-row');
-        const halvingChance = document.getElementById('chance-by-halving');
-
-        const untilHalvingText = (data['untilNextHalvingChanceText'] ?? '').toString().trim();
-
-        if (untilHalvingText !== '') {
-            halvingChance.innerHTML = untilHalvingText;
-            halvingRow.style.display = '';
-        } else {
-            halvingChance.innerHTML = '';
-            halvingRow.style.display = 'none';
-        }
-
-        // ---- last mining reward block visibility logic ----
-        const lastBlockRow = document.getElementById('last-mining-reward-block-row');
-        const lastBlockRow2 = document.getElementById('last-mining-reward-block-row2');
-        const lastBlockChance = document.getElementById('chance-by-last-block');
-
-        const untilLastBlockText = (data['untilLastMiningRewardBlockChanceText'] ?? '').toString().trim();
-
-        if (untilLastBlockText !== '') {
-            lastBlockChance.innerHTML = untilLastBlockText;
-            lastBlockRow.style.display = '';
-            lastBlockRow2.style.removeProperty('display');
-        } else {
-            lastBlockChance.innerHTML = '';
-            lastBlockRow.style.display = 'none';
-            lastBlockRow2.style.setProperty('display', 'none', 'important');
-        }
+        setConditionalRow(
+            el.lastBlockRow, el.lastBlockRow2, el.lastBlockChance,
+            (data.untilLastMiningRewardBlockChanceText ?? '').toString()
+        );
 
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Calculation failed:', error);
+        alert('Could not fetch data. Please check your connection and try again.');
     } finally {
-        // Restore button text/state
-        if (calcBtn) {
-            calcBtn.disabled = false;
-            calcBtn.innerHTML = 'Calculate';
-        }
+        el.calcBtn.disabled = false;
+        el.calcBtn.innerHTML = 'Calculate';
     }
 }
 
-document.getElementById('inputHashrate').addEventListener('keypress', function (event) {
-    // Check if the pressed key is Enter (key code 13)
-    if (event.keyCode === 13) {
-        // Prevent the default form submission behavior
-        event.preventDefault();
-        // Call the calculateHashrate function
+// ── Enter key support ─────────────────────────────────────────────────────
+el.hashrate.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
         calculateHashrate();
     }
 });
