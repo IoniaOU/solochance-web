@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Free solo mining chance calculator. The only calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more. Enter your hashrate and calculate instantly.">
+    <meta name="author" content="SoloChance.org">
+    <meta name="google" content="notranslate">
+    <meta name="propeller" content="89bdd5fd635427d634868aa190c25f10">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://solochance.org/">
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://solochance.org/">
+    <meta property="og:title"       content="SoloChance.org — Solo Mining Chance Calculator">
+    <meta property="og:description" content="The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more.">
+    <meta property="og:image"       content="https://solochance.org/images/logo-domain.png">
+    <meta property="og:site_name"   content="SoloChance.org">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@solochanceorg">
+    <meta name="twitter:title"       content="SoloChance.org — Solo Mining Chance Calculator">
+    <meta name="twitter:description" content="The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more.">
+    <meta name="twitter:image"       content="https://solochance.org/images/logo-domain.png">
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SoloChance.org",
+      "url": "https://solochance.org",
+      "description": "The only solo mining calculator supporting Bitcoin Cash, Bitcoin SV and eCash — plus Bitcoin, Monero, Dogecoin and 15+ more.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Person", "name": "SoloChance.org" }
+    }
+    </script>
+
+    <link rel="icon" type="image/png" href="images/logo-no-text-transparent.png">
+
+    <!-- Font Awesome (for spinner in form.js) -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plh7eqjHY/dChFMmjsHiGwkuQimqQ=="
+          crossorigin="anonymous">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6507588368884912"
+            crossorigin="anonymous"></script>
+
+
+    <title>SoloChance.org — Solo Mining Chance Calculator</title>
+
+    <style>
+        /* ── Design tokens ───────────────────────────────────────────── */
+        :root {
+            --accent:       #4f46e5;
+            --accent-dark:  #4338ca;
+            --accent-bg:    #eef2ff;
+            --surface:      #ffffff;
+            --bg:           #f1f5f9;
+            --border:       #e2e8f0;
+            --text:         #0f172a;
+            --text-muted:   #64748b;
+            --text-faint:   #94a3b8;
+            --green:        #16a34a;
+            --green-dark:   #15803d;
+            --radius:       10px;
+            --shadow:       0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+        }
+
+        /* ── Reset ───────────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { font-size: 17px; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: var(--accent); }
+        a:hover { color: var(--accent-dark); }
+
+        /* ── Page wrapper ────────────────────────────────────────────── */
+        .page {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 16px 80px;
+        }
+
+        /* ── Header ──────────────────────────────────────────────────── */
+        .site-header {
+            text-align: center;
+            padding: 44px 0 24px;
+        }
+
+        .site-header img {
+            max-height: 148px;
+            width: auto;
+            mix-blend-mode: multiply;
+        }
+
+        .social-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 18px;
+            padding: 6px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: border-color .2s, color .2s;
+        }
+
+        .social-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+        .theme-portal {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 48px;
+            background: #000;
+            border: 1px solid rgba(0,245,255,.35);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            color: #00f5ff;
+            text-decoration: none;
+            overflow: hidden;
+            box-shadow: 0 0 18px rgba(0,245,255,.15), inset 0 0 18px rgba(0,245,255,.04);
+            transition: border-color .3s, box-shadow .3s;
+        }
+
+        .theme-portal:hover {
+            border-color: #00f5ff;
+            color: #00f5ff;
+            box-shadow: 0 0 32px rgba(0,245,255,.35), inset 0 0 24px rgba(0,245,255,.08);
+        }
+
+        .portal-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .portal-label {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-shadow: 0 0 10px rgba(0,245,255,.7);
+        }
+
+        .portal-text { white-space: nowrap; }
+
+        /* ── Tagline ─────────────────────────────────────────────────── */
+        .tagline {
+            text-align: center;
+            padding: 20px 16px 26px;
+            border-top: 1px solid var(--border);
+            margin-top: 10px;
+        }
+
+        .tagline p {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .tagline .dice {
+            font-size: 1.4rem;
+            letter-spacing: 6px;
+            margin-top: 10px;
+        }
+
+        /* ── Panel ───────────────────────────────────────────────────── */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 28px;
+            margin-bottom: 20px;
+        }
+
+        .panel-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            margin-bottom: 18px;
+        }
+
+        /* ── Calculator form ─────────────────────────────────────────── */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) auto;
+            gap: 14px;
+            align-items: end;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        select,
+        input[type="number"],
+        textarea {
+            display: block;
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.875rem;
+            padding: 8px 10px;
+            outline: none;
+            transition: border-color .18s, box-shadow .18s, background .18s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 28px;
+        }
+
+        select:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+            background: var(--surface);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        .btn-calculate {
+            height: 38px;
+            padding: 0 22px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .18s, box-shadow .18s, opacity .18s;
+        }
+
+        .btn-calculate:hover:not(:disabled) {
+            background: var(--accent-dark);
+            box-shadow: 0 4px 12px rgba(79,70,229,.35);
+        }
+
+        .btn-calculate:disabled { opacity: .6; cursor: not-allowed; }
+
+        /* mr-2 helper for form.js's spinner markup */
+        .mr-2 { margin-right: 0.375rem; }
+
+        /* ── Results table ───────────────────────────────────────────── */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table tr + tr { border-top: 1px solid var(--border); }
+
+        .result-table th {
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            padding: 10px 4px;
+            text-align: left;
+            width: 55%;
+        }
+
+        .result-table td {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+            padding: 10px 4px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .result-table tr.em td   { color: var(--accent); font-weight: 600; }
+        .result-table tr.em-g td { color: var(--green);  font-weight: 600; }
+        .result-table tr.em-o td { color: #ea580c;       font-weight: 600; }
+
+        /* ── Footnote ────────────────────────────────────────────────── */
+        .footnote {
+            font-size: 0.75rem;
+            color: var(--text-faint);
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── Donate wrapper ──────────────────────────────────────────── */
+        #coffee-donate {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+        #coffee-donate.donate-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes donateSwap {
+            0%   { opacity: 1; transform: translateY(0); }
+            35%  { opacity: 0; transform: translateY(6px); }
+            36%  { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        #donate-address-panel.swapping {
+            animation: donateSwap 0.55s ease forwards;
+        }
+
+        .donate-address-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 10px 14px;
+            margin-top: 8px;
+        }
+
+        .donate-address-row code {
+            flex: 1;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            flex-shrink: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 12px;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+        }
+
+        .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-copy.copied { border-color: var(--green); color: var(--green); }
+
+        /* ── Divider ─────────────────────────────────────────────────── */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 28px 0;
+        }
+
+        /* ── Disclaimer ──────────────────────────────────────────────── */
+        .disclaimer {
+            font-size: 0.76rem;
+            color: var(--text-faint);
+            text-align: center;
+            padding: 0 8px;
+            line-height: 1.6;
+        }
+
+        /* ── Video ───────────────────────────────────────────────────── */
+        .video-panel h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .video-wrap {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .video-wrap iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+        }
+
+        /* ── Widget generator ────────────────────────────────────────── */
+        .widget-panel h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .widget-panel .sub {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .widget-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .widget-label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            margin-top: 12px;
+        }
+
+        .widget-label:first-child { margin-top: 0; }
+
+        textarea {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 0.75rem;
+            resize: none;
+            min-height: 80px;
+        }
+
+        .btn-generate {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+            padding: 9px;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .18s;
+        }
+
+        .btn-generate:hover { background: var(--green-dark); }
+
+        .preview-label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            margin-top: 14px;
+        }
+
+        /* ── API block ───────────────────────────────────────────────── */
+        .api-block {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 14px 18px;
+            overflow-x: auto;
+        }
+
+        .api-block code {
+            display: block;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+            font-size: 0.73rem;
+            color: #166534;
+            white-space: nowrap;
+        }
+
+        /* ── Footer ─────────────────────────────────────────────────── */
+        #site-footer { margin-top: 20px; }
+
+        /* ── Stale results ───────────────────────────────────────────── */
+        .result-table {
+            transition: opacity 0.25s;
+        }
+
+        .result-table.stale {
+            opacity: 0.3;
+        }
+
+        /* ── Result row animation ───────────────────────────────────── */
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .result-table.animate tbody tr {
+            opacity: 0;
+            animation: rowIn 0.3s forwards;
+        }
+
+        .result-table.animate tbody tr:nth-child(1)  { animation-delay: 0.04s; }
+        .result-table.animate tbody tr:nth-child(2)  { animation-delay: 0.08s; }
+        .result-table.animate tbody tr:nth-child(3)  { animation-delay: 0.12s; }
+        .result-table.animate tbody tr:nth-child(4)  { animation-delay: 0.16s; }
+        .result-table.animate tbody tr:nth-child(5)  { animation-delay: 0.20s; }
+        .result-table.animate tbody tr:nth-child(6)  { animation-delay: 0.24s; }
+        .result-table.animate tbody tr:nth-child(7)  { animation-delay: 0.28s; }
+        .result-table.animate tbody tr:nth-child(8)  { animation-delay: 0.32s; }
+        .result-table.animate tbody tr:nth-child(9)  { animation-delay: 0.36s; }
+        .result-table.animate tbody tr:nth-child(10) { animation-delay: 0.40s; }
+        .result-table.animate tbody tr:nth-child(11) { animation-delay: 0.44s; }
+        .result-table.animate tbody tr:nth-child(12) { animation-delay: 0.48s; }
+        .result-table.animate tbody tr:nth-child(13) { animation-delay: 0.52s; }
+        .result-table.animate tbody tr:nth-child(14) { animation-delay: 0.56s; }
+
+        /* ── Responsive ──────────────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .panel { padding: 18px 16px; }
+
+            .calc-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .calc-grid .btn-cell { grid-column: span 2; }
+
+            .widget-grid { grid-template-columns: 1fr; }
+
+            .theme-portal {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                top: 12px;
+                right: 12px;
+            }
+
+            .portal-text { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<a class="theme-portal" href="scifi/">
+    <canvas class="portal-canvas" id="portal-canvas"></canvas>
+    <span class="portal-label">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <span class="portal-text">Sci-Fi Theme</span>
+    </span>
+</a>
+
+<div class="page">
+
+    <!-- ── Header ───────────────────────────────────────────────────────── -->
+    <header class="site-header">
+        <img src="images/logo-domain.png" alt="SoloChance.org — Solo Mining Chance Calculator">
+        <div>
+            <a class="social-pill" href="https://twitter.com/solochanceorg" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                Follow @solochanceorg
+            </a>
+        </div>
+    </header>
+
+    <!-- ── Tagline ──────────────────────────────────────────────────────── -->
+    <div class="tagline">
+        <p>Calculate the chance of hitting a block for all cryptocurrencies when solo mining.</p>
+        <div class="dice">🎲🟨🟩</div>
+    </div>
+
+    <!-- ── Calculator ───────────────────────────────────────────────────── -->
+    <div class="panel">
+        <div class="panel-label">Calculator</div>
+        <form id="hashrateForm" onsubmit="return false;">
+            <div class="calc-grid">
+                <div>
+                    <label class="field-label" for="selectCurrency">Currency</label>
+                    <select id="selectCurrency" name="selectCurrency" onchange="changeCurrency()">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="BCH">Bitcoin Cash (BCH)</option>
+                        <option value="BSV">Bitcoin SV (BSV)</option>
+                        <option value="XEC">eCash (XEC)</option>
+                        <option value="DGB">DigiByte (DGB) – SHA256</option>
+                        <option value="AUR">Auroracoin (AUR) – SHA256</option>
+                        <option value="PPC">Peercoin (PPC)</option>
+                        <option value="LCC">Litecoin Cash (LCC) – SHA256</option>
+                        <option value="LTC">Litecoin (LTC)</option>
+                        <option value="DOGE">Dogecoin (DOGE)</option>
+                        <option value="XMR">Monero (XMR)</option>
+                        <option value="RVN">Ravencoin (RVN)</option>
+                        <option value="ETC">Ethereum Classic (ETC)</option>
+                        <option value="BTCS">Bitcoin Silver (BTCS)</option>
+                        <option value="BC2">BitcoinII (BC2)</option>
+                        <option value="SC">Siacoin (SC)</option>
+                        <option value="ZEC">Zcash (ZEC)</option>
+                        <option value="tBTC">Bitcoin Testnet (tBTC)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label" for="selectHashrateUnit">Hashrate Unit</label>
+                    <select id="selectHashrateUnit" name="selectHashrateUnit">
+                        <option value="KH">KH/s — Kilohash</option>
+                        <option value="MH">MH/s — Megahash</option>
+                        <option value="GH">GH/s — Gigahash</option>
+                        <option value="TH" selected>TH/s — Terahash</option>
+                        <option value="PH">PH/s — Petahash</option>
+                        <option value="EH">EH/s — Exahash</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label" for="inputHashrate">Your Hashrate</label>
+                    <input type="number" id="inputHashrate" name="inputHashrate"
+                           placeholder="e.g. 100" min="0">
+                </div>
+                <div class="btn-cell">
+                    <button type="button" class="btn-calculate" id="calculate-btn"
+                            onclick="calculateHashrate()">Calculate</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- ── Donate ───────────────────────────────────────────────────────── -->
+    <div id="coffee-donate" style="display: none;">
+        <div class="panel">
+            <div class="panel-label">Buy a coffee for the developer</div>
+            <div id="donate-address-panel"></div>
+        </div>
+    </div>
+
+    <!-- ── Results ───────────────────────────────────────────────────────── -->
+    <div class="panel">
+        <div class="panel-label">Results</div>
+        <div id="result">
+            <table class="result-table">
+                <tbody>
+                    <tr>
+                        <th>Your hashrate</th>
+                        <td id="your-hashrate">—</td>
+                    </tr>
+                    <tr>
+                        <th>Network hashrate</th>
+                        <td id="network-hashrate">—</td>
+                    </tr>
+                    <tr>
+                        <th>Block interval</th>
+                        <td id="block-interval">—</td>
+                    </tr>
+                    <tr>
+                        <th>Currency price</th>
+                        <td id="price">—</td>
+                    </tr>
+                    <tr class="em-o">
+                        <th>Block reward</th>
+                        <td id="block-reward">—</td>
+                    </tr>
+                    <tr class="em-g">
+                        <th>Block reward (USD)</th>
+                        <td id="block-reward-usd">—</td>
+                    </tr>
+                    <tr>
+                        <th>Chance per block</th>
+                        <td id="chance-per-block">—</td>
+                    </tr>
+                    <tr>
+                        <th>Chance per hour</th>
+                        <td id="chance-per-hour">—</td>
+                    </tr>
+                    <tr class="em">
+                        <th>Chance per day</th>
+                        <td id="chance-per-day">—</td>
+                    </tr>
+                    <tr>
+                        <th>Chance per week</th>
+                        <td id="chance-per-week">—</td>
+                    </tr>
+                    <tr>
+                        <th>Chance per month</th>
+                        <td id="chance-per-month">—</td>
+                    </tr>
+                    <tr>
+                        <th>Chance per year</th>
+                        <td id="chance-per-year">—</td>
+                    </tr>
+                    <tr id="halving-row" style="display: none;">
+                        <th>Chance by the 2028 halving</th>
+                        <td id="chance-by-halving">—</td>
+                    </tr>
+                    <tr id="last-mining-reward-block-row" style="display: none;">
+                        <th>Chance by 2140 *</th>
+                        <td id="chance-by-last-block">—</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p id="last-mining-reward-block-row2" class="footnote" style="display: none;">
+                * The last block with mining reward will be mined in 2140.
+            </p>
+        </div>
+    </div>
+
+    <!-- ── Disclaimer ───────────────────────────────────────────────────── -->
+    <p class="disclaimer">
+        DISCLAIMER: We make no representation or warranty of any kind, express or implied,
+        regarding the accuracy, adequacy, validity, reliability, availability, or completeness
+        of any information.
+    </p>
+
+    <hr class="divider">
+
+    <!-- ── How-to video ─────────────────────────────────────────────────── -->
+    <div class="panel video-panel">
+        <h2>How To Calculate Solo Mining Chance</h2>
+        <div class="video-wrap">
+            <iframe src="https://www.youtube.com/embed/Qyz8Mw0oogo?si=Ua1c_po6ZJoCPNhS"
+                    title="How to use"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── Widget generator ─────────────────────────────────────────────── -->
+    <div class="panel widget-panel">
+        <h2>Add Live Calculations To Your Product Page</h2>
+        <p class="sub">Customise how the calculator appears on your website.</p>
+
+        <div class="widget-grid">
+            <div>
+                <label class="widget-label" for="w-curr">Currency</label>
+                <select id="w-curr">
+                    <option value="BTC">Bitcoin (BTC)</option>
+                    <option value="BCH">Bitcoin Cash (BCH)</option>
+                    <option value="BSV">Bitcoin SV (BSV)</option>
+                    <option value="XEC">eCash (XEC)</option>
+                    <option value="DGB">DigiByte (DGB) – SHA256</option>
+                    <option value="AUR">Auroracoin (AUR) – SHA256</option>
+                    <option value="PPC">Peercoin (PPC)</option>
+                    <option value="LCC">Litecoin Cash (LCC) – SHA256</option>
+                    <option value="LTC">Litecoin (LTC)</option>
+                    <option value="DOGE">Dogecoin (DOGE)</option>
+                    <option value="XMR">Monero (XMR)</option>
+                    <option value="RVN">Ravencoin (RVN)</option>
+                    <option value="ETC">Ethereum Classic (ETC)</option>
+                    <option value="BTCS">Bitcoin Silver (BTCS)</option>
+                    <option value="BC2">BitcoinII (BC2)</option>
+                    <option value="SC">Siacoin (SC)</option>
+                    <option value="ZEC">Zcash (ZEC)</option>
+                    <option value="tBTC">Bitcoin Testnet (tBTC)</option>
+                </select>
+
+                <label class="widget-label" for="w-hash">Product Hashrate</label>
+                <input type="number" id="w-hash" value="140">
+
+                <label class="widget-label" for="w-unit">Unit</label>
+                <select id="w-unit">
+                    <option value="KH">KH/s — Kilohash</option>
+                    <option value="MH">MH/s — Megahash</option>
+                    <option value="GH">GH/s — Gigahash</option>
+                    <option value="TH" selected>TH/s — Terahash</option>
+                    <option value="PH">PH/s — Petahash</option>
+                    <option value="EH">EH/s — Exahash</option>
+                </select>
+
+                <button class="btn-generate" onclick="generateWidget()">Generate Code</button>
+            </div>
+
+            <div>
+                <label class="widget-label" for="w-output">Copy this code to your website:</label>
+                <textarea id="w-output" rows="4" readonly></textarea>
+
+                <span class="preview-label">Preview:</span>
+                <div id="w-preview"></div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── API ──────────────────────────────────────────────────────────── -->
+    <div class="panel">
+        <div class="panel-label">API</div>
+        <div class="api-block">
+            <code>curl 'https://api.solochance.org/getSoloChanceCalculations?currency=BTC&amp;hashrate=42&amp;hashrateUnit=TH'</code>
+        </div>
+    </div>
+
+    <!-- ── Footer ───────────────────────────────────────────────────────── -->
+    <footer id="site-footer">
+        <p class="disclaimer">
+            Built in 🇪🇪 Estonia · Hosted in 🇩🇪 Germany
+        </p>
+        <p class="disclaimer" style="margin-top:6px;">
+            © SoloChance.org ·
+            <a href="/terms.html">Terms of Service</a> ·
+            <a href="/privacy.html">Privacy Policy</a>
+        </p>
+    </footer>
+
+</div><!-- /page -->
+
+<script>
+    const DONATE_ADDRESSES = {
+    'BTC': 'bc1qzhf8vl89ev6jcly6zexdehef4zgnh3w8ahf97a',
+    'BCH': 'bitcoincash:qzky6wvyh72p6t0smr5qyc0wff3s7m7rjs9ufhdgpm',
+    'BSV': '15jEvM15BVRYbeNsv9Dkr1BgySA2AcNAsQ',
+    'XEC': 'ecash:qz4rdfhr97dev2p7wzkf9ucc8fzxduf795uen9r9m9',
+    'DGB': 'DNFom53EYTntDPRfv19dbvFTKxR4RSsFi9',
+    'LTC': 'ltc1qmjhg6n96la3mszdwrnppz3jg8drtr7627rxusu',
+    'DOGE': 'DH3n1YKXmVxdeMgrpbZb1FEQ8dj7tJmAUd',
+    'XMR': '85PDyHAcS9vdCjYjKksmo9Fo5XiscEgL32xLEsKtnEo7Aw9zon1Vm8oRYQf9TGw4kuaTgR4iocUgrLB9wprxNdAFEE9e5Ht',
+    'RVN': 'RFKhncKtrHFDMBXStyUybumvoGur65QdFV',
+    'ETC': '0x313105B4eea850a00f79d1DFc1DfA1dEc6C67171',
+    'ZEC': 't1fhoTM1KRtkKSpc457BVQwJzpxq6SAWRF6'
+    };
+
+    var _lastDonateCurrency = null;
+
+    function updateDonateSection() {
+        const currency = document.getElementById('selectCurrency').value;
+        const address  = DONATE_ADDRESSES[currency] || null;
+        const wrapper  = document.getElementById('coffee-donate');
+        const panel    = document.getElementById('donate-address-panel');
+
+        if (typeof calcCount === 'undefined' || calcCount < 2 || !address) {
+            _lastDonateCurrency = null;
+            wrapper.classList.remove('donate-visible');
+            clearTimeout(wrapper._hideTimer);
+            wrapper._hideTimer = setTimeout(function () {
+                if (!wrapper.classList.contains('donate-visible')) {
+                    wrapper.style.display = 'none';
+                }
+            }, 400);
+            return;
+        }
+
+        const newContent =
+            '<p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">' + currency + '</p>' +
+            '<div class="donate-address-row">' +
+                '<code>' + address + '</code>' +
+                '<button class="btn-copy" onclick="copyDonateAddress(\'' + address + '\', this)">Copy</button>' +
+            '</div>';
+
+        const alreadyVisible = wrapper.classList.contains('donate-visible');
+
+        if (alreadyVisible) {
+            if (currency === _lastDonateCurrency) return; // same content, no animation
+            // content swap: animate only the inner panel
+            panel.classList.remove('swapping');
+            void panel.offsetWidth;
+            panel.innerHTML = newContent;
+            panel.classList.add('swapping');
+            _lastDonateCurrency = currency;
+            return;
+        }
+
+        panel.innerHTML = newContent;
+        _lastDonateCurrency = currency;
+
+        if (wrapper.style.display === 'none') {
+            wrapper.style.display = '';
+        }
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                wrapper.classList.add('donate-visible');
+            });
+        });
+    }
+
+    function changeCurrency() {
+        updateDonateSection();
+    }
+
+    function copyDonateAddress(address, btn) {
+        navigator.clipboard.writeText(address).then(function () {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(function () {
+                btn.textContent = 'Copy';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    function generateWidget() {
+        const curr = document.getElementById('w-curr').value;
+        const hash = document.getElementById('w-hash').value;
+        const unit = document.getElementById('w-unit').value;
+        const url  = `https://solochance.org/widget.html?currency=${curr}&hashrate=${hash}&unit=${unit}`;
+        const code = `<iframe src="${url}" width="350" height="350" frameborder="0"></iframe>`;
+        document.getElementById('w-output').value   = code;
+        document.getElementById('w-preview').innerHTML = code;
+    }
+</script>
+
+<script>
+(function () {
+    const canvas = document.getElementById('portal-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [];
+
+    function resize() {
+        W = canvas.width  = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+    }
+
+    function initStars() {
+        stars = [];
+        for (let i = 0; i < 90; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: Math.random() * 1.1 + 0.2,
+                speed: Math.random() * 0.45 + 0.08,
+                opacity: Math.random()
+            });
+        }
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, W, H);
+        stars.forEach(s => {
+            s.y += s.speed;
+            if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+            s.opacity += (Math.random() - 0.5) * 0.025;
+            s.opacity = Math.max(0.1, Math.min(1, s.opacity));
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 245, 255, ${s.opacity * 0.65})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+
+    resize();
+    initStars();
+    draw();
+    window.addEventListener('resize', () => { resize(); initStars(); });
+}());
+</script>
+
+<script src="js/form.js?v=5"></script>
+
+<script>
+    var calcCount = 0;
+(function () {
+    const _orig = calculateHashrate;
+    calculateHashrate = async function () {
+        await _orig();
+        const tbl = document.querySelector('.result-table');
+        if (!tbl) return;
+        hasCalculated = true;
+        calcCount++;
+        tbl.classList.remove('animate', 'stale');
+        void tbl.offsetWidth; // force reflow
+        tbl.classList.add('animate');
+        updateDonateSection();
+    };
+
+    let hasCalculated = false;
+
+    function updateBtn() {
+        const val = document.getElementById('inputHashrate').value;
+        const btn = document.getElementById('calculate-btn');
+        btn.disabled = !val || parseFloat(val) <= 0;
+    }
+    document.getElementById('inputHashrate').addEventListener('input', updateBtn);
+    updateBtn();
+
+    function markStale() {
+        if (!hasCalculated) return;
+        const tbl = document.querySelector('.result-table');
+        if (tbl) tbl.classList.add('stale');
+    }
+
+    ['selectCurrency', 'selectHashrateUnit', 'inputHashrate'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('change', markStale);
+            el.addEventListener('input', markStale);
+        }
+    });
+}());
+</script>
+</body>
+</html>

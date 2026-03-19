@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --accent:     #4f46e5;
+            --green:      #16a34a;
+            --border:     #e2e8f0;
+            --text:       #0f172a;
+            --text-muted: #64748b;
+            --text-faint: #94a3b8;
+            --surface:    #ffffff;
+            --radius:     10px;
+            --shadow:     0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.05);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .widget {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px 18px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ── Header ── */
+        .widget-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .widget-header strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* ── Table ── */
+        .widget-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .widget-table tr + tr { border-top: 1px solid var(--border); }
+
+        .widget-table td {
+            padding: 7px 2px;
+            font-size: 0.8rem;
+            vertical-align: middle;
+        }
+
+        .widget-table td:first-child {
+            color: var(--text-muted);
+            font-weight: 400;
+            width: 55%;
+        }
+
+        .widget-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            color: var(--text);
+        }
+
+        .widget-table tr.accent td:last-child { color: var(--accent); }
+        .widget-table tr.green  td:last-child { color: var(--green);  }
+
+        /* loading state */
+        .widget-table td.loading {
+            color: var(--text-faint);
+            font-weight: 400;
+        }
+
+        /* ── Footer ── */
+        .widget-footer {
+            text-align: center;
+            font-size: 0.68rem;
+            color: var(--text-faint);
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+
+        .widget-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .widget-footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="widget">
+    <div class="widget-header">
+        Running at <strong id="display-hash">…</strong> &mdash; solo block hit chances:
+    </div>
+
+    <table class="widget-table">
+        <tbody>
+            <tr>
+                <td>Currency</td>
+                <td id="currency" class="loading">—</td>
+            </tr>
+            <tr class="green">
+                <td>Block Reward</td>
+                <td id="reward" class="loading">—</td>
+            </tr>
+            <tr>
+                <td>Per Day</td>
+                <td id="day" class="loading">—</td>
+            </tr>
+            <tr>
+                <td>Per Week</td>
+                <td id="week" class="loading">—</td>
+            </tr>
+            <tr>
+                <td>Per Month</td>
+                <td id="month" class="loading">—</td>
+            </tr>
+            <tr class="accent">
+                <td>Per Year</td>
+                <td id="year" class="loading">—</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="widget-footer">
+        Powered by <a href="https://solochance.org" target="_blank" rel="noopener">SoloChance.org</a>
+    </div>
+</div>
+
+<script>
+    const params   = new URLSearchParams(window.location.search);
+    const currency = params.get('currency') || 'BTC';
+    const hashrate = params.get('hashrate') || '100';
+    const unit     = params.get('unit')     || 'TH';
+
+    document.getElementById('display-hash').innerText = `${hashrate} ${unit}/s`;
+
+    fetch(`https://api.solochance.org/getSoloChanceCalculations?currency=${currency}&hashrate=${hashrate}&hashrateUnit=${unit}`)
+        .then(res => res.json())
+        .then(data => {
+            function set(id, val) {
+                const el = document.getElementById(id);
+                el.innerText = val;
+                el.classList.remove('loading');
+            }
+            set('currency', currency);
+            set('reward',   Number(data.blockRewardInUSD).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' USD');
+            set('day',      data.dayChanceText);
+            set('week',     data.weekChanceText);
+            set('month',    data.monthChanceText);
+            set('year',     data.yearChanceText);
+        });
+</script>
+</body>
+</html>

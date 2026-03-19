@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /widget.html
+
+Sitemap: https://solochance.org/sitemap.xml
